@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { getBalance, getPlayers, getPlayerTransactions, createTransaction } from '@/lib/api';
 import { Player, Transaction, CreateTransactionRequest } from '@/lib/types';
-import { Wallet, PlusCircle, ArrowDownCircle, ArrowUpCircle } from 'lucide-react';
+import { Wallet, PlusCircle, ArrowDownCircle, ArrowUpCircle, Download } from 'lucide-react';
+import Image from 'next/image';
 import styles from '@/css/team-fund.module.css';
 import { useAdmin } from '@/lib/useAdmin';
 
@@ -96,6 +97,28 @@ export default function TeamFundPage() {
         <p className={styles.balanceAmount}>
           {balance !== null ? balance.toLocaleString('vi-VN') + 'đ' : '...'}
         </p>
+      </div>
+
+      <div className={styles.bankQrCard}>
+        <p className={styles.bankQrTitle}>Thông tin chuyển khoản</p>
+        <div className={styles.bankQrImageWrap}>
+          <Image
+            src="/bank-qr.jpg"
+            alt="QR chuyển khoản - Phạm Minh Hoàng 0589675609"
+            width={320}
+            height={692}
+            className={styles.bankQrImage}
+            priority
+          />
+        </div>
+        <a
+          href="/bank-qr.jpg"
+          download="QR-chuyen-khoan-PFF.jpg"
+          className={styles.bankQrDownloadBtn}
+        >
+          <Download size={15} />
+          Tải ảnh QR
+        </a>
       </div>
 
       <div className={styles.contentGrid}>

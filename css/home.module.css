@@ -24,6 +24,10 @@
   color: #14532d;
 }
 
+@media (max-width: 480px) {
+  .heroTitle { font-size: 1.75rem; }
+}
+
 .heroSub {
   color: #16a34a;
   margin-top: 0.5rem;
@@ -36,6 +40,10 @@
   gap: 1.5rem;
   width: 100%;
   max-width: 42rem;
+}
+
+@media (max-width: 400px) {
+  .grid { grid-template-columns: 1fr; }
 }
 
 .card {

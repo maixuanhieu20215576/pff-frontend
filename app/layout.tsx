@@ -1,9 +1,10 @@
 'use client';
 
 import './globals.css';
+// viewport meta is handled via <meta> in the html head below
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Users, Trophy, Wallet, ClipboardList, Volleyball } from 'lucide-react';
+import { Users, Trophy, Wallet, ClipboardList, Volleyball, Menu, X } from 'lucide-react';
 import { Nunito } from 'next/font/google';
 import styles from '@/css/layout.module.css';
 import { useState, useRef } from 'react';
@@ -25,6 +26,7 @@ const navItems = [
 function Header() {
   const pathname = usePathname();
   const [showEaster, setShowEaster] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const clickCount = useRef(0);
 
   const handleLogoClick = (e: React.MouseEvent) => {
@@ -62,7 +64,29 @@ function Header() {
               );
             })}
           </nav>
+          <button className={styles.menuBtn} onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
+        {menuOpen && (
+          <nav className={styles.mobileNav}>
+            {navItems.map((item) => {
+              const active = pathname.startsWith(item.href);
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`${styles.mobileNavLink} ${active ? styles.mobileNavLinkActive : ''}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <Icon size={16} />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
       </header>
 
       {showEaster && (
@@ -81,6 +105,9 @@ function Header() {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" className={nunito.variable}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body className={styles.body}>
         <Header />
         <main className={styles.main}>{children}</main>

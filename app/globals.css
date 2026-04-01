@@ -16,6 +16,14 @@ body {
   font-family: var(--font-nunito), Arial, Helvetica, sans-serif;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  img { max-width: 100%; }
+}
+
 .badge-gold {
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
