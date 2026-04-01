@@ -85,8 +85,12 @@ export default function PlayersPage() {
         <div className="text-center py-20 text-green-600">Đang tải...</div>
       ) : (
         <div className={styles.grid}>
-          {players.map((p) => (
-            <div key={p.id} className={styles.card}>
+          {[...players].sort((a, b) => {
+            const aR = a.status === 'RETIRED' ? 1 : 0;
+            const bR = b.status === 'RETIRED' ? 1 : 0;
+            return aR - bR;
+          }).map((p) => (
+            <div key={p.id} className={`${styles.card} ${p.status === 'RETIRED' ? styles.cardRetired : ''}`}>
               {p.imageUrl ? (
                 <img src={p.imageUrl} alt={p.fullName} className={styles.cardImg} />
               ) : (

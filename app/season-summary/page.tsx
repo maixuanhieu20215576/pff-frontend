@@ -239,10 +239,11 @@ export default function SeasonSummaryPage() {
                     );
                     const isTopGA = topGAPlayers.some((p) => p.playerName === row.playerName);
                     const isTopMvp = topMvpPlayers.some((p) => p.playerName === row.playerName);
+                    const medalClass = idx === 0 ? styles.tableRowGold : idx === 1 ? styles.tableRowSilver : idx === 2 ? styles.tableRowBronze : "";
                     return (
                       <tr
                         key={selectedSeason === "all" ? row.playerName : row.id}
-                        className={`${styles.tableRow} ${idx === 0 ? styles.tableRowTop : ""}`}
+                        className={`${styles.tableRow} ${medalClass}`}
                       >
                         <td className={styles.nameCell}>
                           {row.playerName}

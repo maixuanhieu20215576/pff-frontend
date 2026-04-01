@@ -157,8 +157,40 @@
 
 .tableRow { border-bottom: 1px solid #f9fafb; transition: background 0.1s; }
 .tableRow:hover { background: #f0fdf4; }
-.tableRowTop { background: #fffbeb; }
-.tableRowTop:hover { background: #fef9c3; }
+
+@keyframes shimmerGold {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes shimmerSilver {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes shimmerBronze {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.tableRowGold {
+  background: linear-gradient(110deg, #ffed4a 0%, #ffe000 30%, #fffde0 50%, #ffe000 70%, #ffed4a 100%);
+  background-size: 200% 100%;
+  animation: shimmerGold 5s linear infinite;
+}
+.tableRowGold td { color: #3b1a00; font-weight: 700; text-shadow: none; }
+
+.tableRowSilver {
+  background: linear-gradient(110deg, #dde6f0 0%, #c8d8e8 30%, #f4f8ff 50%, #c8d8e8 70%, #dde6f0 100%);
+  background-size: 200% 100%;
+  animation: shimmerSilver 5s linear infinite;
+}
+.tableRowSilver td { color: #1a2030; font-weight: 700; text-shadow: none; }
+
+.tableRowBronze {
+  background: linear-gradient(110deg, #ffb347 0%, #f08020 30%, #ffd8a0 50%, #f08020 70%, #ffb347 100%);
+  background-size: 200% 100%;
+  animation: shimmerBronze 5s linear infinite;
+}
+.tableRowBronze td { color: #1a0a00; font-weight: 700; text-shadow: none; }
 
 .rankCell { padding: 0.75rem 1rem; font-weight: 700; color: #9ca3af; }
 .nameCell { padding: 0.75rem 1rem; font-weight: 600; color: #111827; }

@@ -57,6 +57,12 @@
   box-shadow: 0 6px 20px rgba(20,83,45,0.13);
 }
 
+.cardRetired {
+  opacity: 0.55;
+  filter: grayscale(0.7);
+  background: #f3f4f6;
+}
+
 .cardImg {
   width: 100%;
   height: 10rem;
