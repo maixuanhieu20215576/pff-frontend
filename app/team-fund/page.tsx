@@ -111,14 +111,22 @@ export default function TeamFundPage() {
             priority
           />
         </div>
-        <a
-          href="/bank-qr.jpg"
-          download="QR-chuyen-khoan-PFF.jpg"
+        <button
           className={styles.bankQrDownloadBtn}
+          onClick={async () => {
+            const res = await fetch('/bank-qr.jpg');
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'QR-chuyen-khoan-PFF.jpg';
+            a.click();
+            URL.revokeObjectURL(url);
+          }}
         >
           <Download size={15} />
           Tải ảnh QR
-        </a>
+        </button>
       </div>
 
       <div className={styles.contentGrid}>
