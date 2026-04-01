@@ -1,0 +1,186 @@
+/* ── Icon animations ── */
+
+@keyframes ballBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  30%       { transform: translateY(-10px) rotate(-15deg); }
+  60%       { transform: translateY(-4px) rotate(10deg); }
+}
+
+@keyframes handshakePulse {
+  0%, 100% { transform: scale(1); }
+  40%       { transform: scale(1.2) rotate(-8deg); }
+  70%       { transform: scale(0.95) rotate(5deg); }
+}
+
+@keyframes flameBurn {
+  0%, 100% { transform: scaleY(1) scaleX(1) rotate(-3deg);   filter: drop-shadow(0 0 4px #f97316) drop-shadow(0 0 10px #ef4444); }
+  25%       { transform: scaleY(1.15) scaleX(0.92) rotate(3deg);  filter: drop-shadow(0 0 8px #fb923c) drop-shadow(0 0 18px #f97316); }
+  50%       { transform: scaleY(0.9) scaleX(1.08) rotate(-2deg); filter: drop-shadow(0 0 12px #fbbf24) drop-shadow(0 0 24px #f97316); }
+  75%       { transform: scaleY(1.1) scaleX(0.95) rotate(4deg);  filter: drop-shadow(0 0 6px #fb923c) drop-shadow(0 0 14px #ef4444); }
+}
+
+@keyframes starSpin {
+  0%   { transform: rotate(0deg) scale(1);    filter: drop-shadow(0 0 4px #fbbf24); }
+  50%  { transform: rotate(180deg) scale(1.2); filter: drop-shadow(0 0 10px #f59e0b) drop-shadow(0 0 20px #fbbf24); }
+  100% { transform: rotate(360deg) scale(1);   filter: drop-shadow(0 0 4px #fbbf24); }
+}
+
+@keyframes trophyShine {
+  0%, 100% { filter: drop-shadow(0 0 3px #ca8a04); transform: rotate(-5deg); }
+  50%       { filter: drop-shadow(0 0 12px #fbbf24) drop-shadow(0 0 24px #fde68a); transform: rotate(5deg); }
+}
+
+@keyframes listPop {
+  0%, 100% { transform: scaleX(1); }
+  50%       { transform: scaleX(1.12); }
+}
+
+.iconBall     { display: inline-flex; animation: ballBounce 1.6s ease-in-out infinite; color: #16a34a; }
+.iconHandshake{ display: inline-flex; animation: handshakePulse 2s ease-in-out infinite; color: #2563eb; }
+.iconFlame    { display: inline-flex; animation: flameBurn 1.2s ease-in-out infinite; color: #ea580c; transform-origin: bottom center; }
+.iconStar     { display: inline-flex; animation: starSpin 3s linear infinite; color: #d97706; }
+.iconTrophy   { display: inline-flex; animation: trophyShine 2s ease-in-out infinite; color: #ca8a04; }
+.iconList     { display: inline-flex; animation: listPop 2.4s ease-in-out infinite; color: #15803d; }
+
+/* ─────────────────────────── */
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #14532d;
+}
+
+.seasonSelect {
+  border: 1px solid #bbf7d0;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: #14532d;
+  background: white;
+  outline: none;
+  font-size: 0.875rem;
+}
+
+.seasonSelect:focus { border-color: #16a34a; }
+
+.statCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) { .statCards { grid-template-columns: repeat(4, 1fr); } }
+
+.statCard {
+  background: white;
+  border: 2px solid #dcfce7;
+  border-radius: 1.25rem;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(20,83,45,0.07);
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.statCard:hover {
+  box-shadow: 0 6px 20px rgba(20,83,45,0.13);
+  transform: translateY(-1px);
+}
+
+.statCardIcon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.statCardLabel { font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem; }
+
+.statCardNames {
+  font-weight: 700;
+  color: #14532d;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  word-break: break-word;
+}
+
+.statCardValue {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #16a34a, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.statCardUnit { font-size: 0.75rem; color: #9ca3af; }
+
+.leaderboard {
+  background: white;
+  border-radius: 1.25rem;
+  box-shadow: 0 2px 8px rgba(20,83,45,0.07);
+  border: 1px solid #dcfce7;
+  overflow: hidden;
+}
+
+.leaderboardHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #dcfce7;
+  background: linear-gradient(90deg, #f0fdf4, #dcfce7);
+  font-weight: 700;
+  color: #14532d;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tableWrap { overflow-x: auto; }
+
+.table { width: 100%; font-size: 0.875rem; border-collapse: collapse; }
+
+.tableHead tr {
+  background: linear-gradient(90deg, #15803d, #16a34a);
+  color: white;
+}
+
+.tableHead th { padding: 0.75rem 1rem; text-align: left; font-weight: 600; }
+.tableHead th:not(:first-child) { text-align: center; }
+
+.tableRow { border-bottom: 1px solid #f9fafb; transition: background 0.1s; }
+.tableRow:hover { background: #f0fdf4; }
+.tableRowTop { background: #fffbeb; }
+.tableRowTop:hover { background: #fef9c3; }
+
+.rankCell { padding: 0.75rem 1rem; font-weight: 700; color: #9ca3af; }
+.nameCell { padding: 0.75rem 1rem; font-weight: 600; color: #111827; }
+.centerCell { padding: 0.75rem 1rem; text-align: center; }
+
+.goals { font-weight: 600; color: #16a34a; }
+.assists { font-weight: 600; color: #2563eb; }
+.ga { font-weight: 700; color: #ea580c; }
+.mvp { font-weight: 600; color: #d97706; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+.seasonCell { padding: 0.75rem 1rem; text-align: center; color: #6b7280; }
