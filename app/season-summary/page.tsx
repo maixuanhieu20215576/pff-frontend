@@ -3,8 +3,11 @@
 import { useEffect, useState, useMemo } from "react";
 import { getSeasonSummaries } from "@/lib/api";
 import { SeasonSummary } from "@/lib/types";
-import { Trophy, Goal, Handshake, Flame, Star, LayoutList } from "lucide-react";
+import { Trophy, Goal, Handshake, Flame, Star, LayoutList, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import styles from "@/css/season-summary.module.css";
+
+type SortKey = "goalScored" | "goalAssisted" | "ga" | "numberOfMvp";
+type SortDir = "desc" | "asc";
 
 function Badge({ label, icon }: { label: string; icon: React.ReactNode }) {
   return (
@@ -14,10 +17,19 @@ function Badge({ label, icon }: { label: string; icon: React.ReactNode }) {
   );
 }
 
+function SortIcon({ column, sortKey, sortDir }: { column: SortKey; sortKey: SortKey; sortDir: SortDir }) {
+  if (column !== sortKey) return <ChevronsUpDown size={13} className={styles.sortIconInactive} />;
+  return sortDir === "desc"
+    ? <ChevronDown size={13} className={styles.sortIconActive} />
+    : <ChevronUp size={13} className={styles.sortIconActive} />;
+}
+
 export default function SeasonSummaryPage() {
   const [summaries, setSummaries] = useState<SeasonSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSeason, setSelectedSeason] = useState<string>("all");
+  const [sortKey, setSortKey] = useState<SortKey>("ga");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -27,6 +39,15 @@ export default function SeasonSummaryPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  function handleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "desc" ? "asc" : "desc"));
+    } else {
+      setSortKey(key);
+      setSortDir("desc");
+    }
+  }
+
   const seasons = useMemo(() => {
     const s = Array.from(new Set(summaries.map((x) => x.season)))
       .sort()
@@ -35,15 +56,37 @@ export default function SeasonSummaryPage() {
   }, [summaries]);
 
   const filtered = useMemo(() => {
-    const list = (
-      selectedSeason === "all"
-        ? summaries
-        : summaries.filter((x) => x.season === selectedSeason)
-    ).filter((x) => x.playerName && x.playerName.trim() !== "");
-    return [...list].sort(
-      (a, b) => b.goalScored + b.goalAssisted - (a.goalScored + a.goalAssisted),
-    );
-  }, [summaries, selectedSeason]);
+    const base = summaries.filter((x) => x.playerName && x.playerName.trim() !== "");
+
+    let list: (SeasonSummary & { ga: number })[];
+
+    if (selectedSeason === "all") {
+      // Merge stats per player across all seasons
+      const map = new Map<string, SeasonSummary & { ga: number }>();
+      for (const row of base) {
+        const existing = map.get(row.playerName);
+        if (existing) {
+          existing.goalScored += row.goalScored;
+          existing.goalAssisted += row.goalAssisted;
+          existing.numberOfMvp += row.numberOfMvp;
+          existing.ga = existing.goalScored + existing.goalAssisted;
+        } else {
+          map.set(row.playerName, { ...row, ga: row.goalScored + row.goalAssisted });
+        }
+      }
+      list = Array.from(map.values());
+    } else {
+      list = base
+        .filter((x) => x.season === selectedSeason)
+        .map((x) => ({ ...x, ga: x.goalScored + x.goalAssisted }));
+    }
+
+    return [...list].sort((a, b) => {
+      const aVal = sortKey === "ga" ? a.ga : a[sortKey];
+      const bVal = sortKey === "ga" ? b.ga : b[sortKey];
+      return sortDir === "desc" ? bVal - aVal : aVal - bVal;
+    });
+  }, [summaries, selectedSeason, sortKey, sortDir]);
 
   const topGoalStat = useMemo(
     () => filtered.reduce((max, x) => Math.max(max, x.goalScored), 0),
@@ -54,11 +97,7 @@ export default function SeasonSummaryPage() {
     [filtered],
   );
   const topGAStat = useMemo(
-    () =>
-      filtered.reduce(
-        (max, x) => Math.max(max, x.goalScored + x.goalAssisted),
-        0,
-      ),
+    () => filtered.reduce((max, x) => Math.max(max, x.ga), 0),
     [filtered],
   );
   const topMvpStat = useMemo(
@@ -79,10 +118,7 @@ export default function SeasonSummaryPage() {
     [filtered, topAssistStat],
   );
   const topGAPlayers = useMemo(
-    () =>
-      filtered.filter(
-        (x) => x.goalScored + x.goalAssisted === topGAStat && topGAStat > 0,
-      ),
+    () => filtered.filter((x) => x.ga === topGAStat && topGAStat > 0),
     [filtered, topGAStat],
   );
   const topMvpPlayers = useMemo(
@@ -177,27 +213,35 @@ export default function SeasonSummaryPage() {
                 <thead className={styles.tableHead}>
                   <tr>
                     <th>Cầu thủ</th>
-                    {selectedSeason === "all" && <th>Mùa giải</th>}
-                    <th>Bàn thắng</th>
-                    <th>Kiến tạo</th>
-                    <th>G/A</th>
-                    <th>MVP</th>
+                    {selectedSeason !== "all" && <th>Mùa giải</th>}
+                    <th className={styles.sortableTh} onClick={() => handleSort("goalScored")}>
+                      Bàn thắng <SortIcon column="goalScored" sortKey={sortKey} sortDir={sortDir} />
+                    </th>
+                    <th className={styles.sortableTh} onClick={() => handleSort("goalAssisted")}>
+                      Kiến tạo <SortIcon column="goalAssisted" sortKey={sortKey} sortDir={sortDir} />
+                    </th>
+                    <th className={styles.sortableTh} onClick={() => handleSort("ga")}>
+                      G/A <SortIcon column="ga" sortKey={sortKey} sortDir={sortDir} />
+                    </th>
+                    <th className={styles.sortableTh} onClick={() => handleSort("numberOfMvp")}>
+                      MVP <SortIcon column="numberOfMvp" sortKey={sortKey} sortDir={sortDir} />
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((row, idx) => {
-                    const ga = row.goalScored + row.goalAssisted;
+                    const ga = row.ga;
                     const isTopGoal = topGoalPlayers.some(
-                      (p) => p.id === row.id,
+                      (p) => p.playerName === row.playerName,
                     );
                     const isTopAssist = topAssistPlayers.some(
-                      (p) => p.id === row.id,
+                      (p) => p.playerName === row.playerName,
                     );
-                    const isTopGA = topGAPlayers.some((p) => p.id === row.id);
-                    const isTopMvp = topMvpPlayers.some((p) => p.id === row.id);
+                    const isTopGA = topGAPlayers.some((p) => p.playerName === row.playerName);
+                    const isTopMvp = topMvpPlayers.some((p) => p.playerName === row.playerName);
                     return (
                       <tr
-                        key={row.id}
+                        key={selectedSeason === "all" ? row.playerName : row.id}
                         className={`${styles.tableRow} ${idx === 0 ? styles.tableRowTop : ""}`}
                       >
                         <td className={styles.nameCell}>
@@ -221,7 +265,7 @@ export default function SeasonSummaryPage() {
                             <Badge icon={<Star size={9} />} label="MVP" />
                           )}
                         </td>
-                        {selectedSeason === "all" && (
+                        {selectedSeason !== "all" && (
                           <td className={styles.seasonCell}>{row.season}</td>
                         )}
                         <td className={`${styles.centerCell} ${styles.goals}`}>
